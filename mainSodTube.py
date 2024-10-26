@@ -72,8 +72,8 @@ while t < T:
     v, e, x = integration.integration(1, part, ipart, N, D, dt)
     ipart['x'] = x
     ipart['u'] = v
-    ipart['e'] = e
-
+    ipart['e'] = e   
+    print (t)
     # 时间积分的第二步 (RK2)
     t += dt / 2
     neighbor = neighborhood.neighborhood(ipart, N, alpha)
