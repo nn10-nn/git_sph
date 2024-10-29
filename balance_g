@@ -1,7 +1,7 @@
 import numpy as np 
 import DW  
 
-def balancef_g(part, N, neighbor, alpha):
+def balancef_g(part, N, neighbor):
     """
     计算使用 GSPH 数值近似法的动量和能量平衡的速度、加速度和内能变化。
 
@@ -38,7 +38,7 @@ def balancef_g(part, N, neighbor, alpha):
 
             # 平滑核梯度（确保使用适合 GSPH 的核函数）
             if x != 0:  # 避免除以零
-                dw = xij * DW.DW(alpha[2], x, h) / (x * h)
+                dw = DW(2, x, h)
             else:
                 dw = 0  # 若 x 为零，设置 dw 为零
 
