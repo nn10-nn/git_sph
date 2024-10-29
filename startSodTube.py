@@ -35,7 +35,7 @@ def preProcess(N, dx1, dx2, gamma):
             part['e'][i] = 2.5
             part['p'][i] = (gamma - 1) * part['d'][i] * part['e'][i]  # 计算压力
             part['u'][i] = 0.0  # 初始速度设置为0
-            part['c'][i] = np.sqrt((gamma - 1) * part['e'][i])  # 计算声速
+            part['c'][i] = np.sqrt(gamma  * part['e'][i])  # 计算声速
             part['m'][i] = dx1  # 假设所有粒子的质量相同，也可以根据实际情况调整
             part['h'][i] = 8 * dx1  # 平滑长度
 
@@ -49,7 +49,7 @@ def preProcess(N, dx1, dx2, gamma):
             part['e'][i] = 1.795
             part['p'][i] = (gamma - 1) * part['d'][i] * part['e'][i]  # 计算压力
             part['u'][i] = 0.0  # 初始速度设置为0
-            part['c'][i] = np.sqrt((gamma - 1) * part['e'][i])  # 计算声速
+            part['c'][i] = np.sqrt(gamma  * part['e'][i])  # 计算声速
             part['m'][i] = dx1  # 假设所有粒子的质量相同
             part['h'][i] = 2 * dx2  # 平滑长度
 
