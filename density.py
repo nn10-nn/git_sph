@@ -28,7 +28,7 @@ def density(part, N, neighbor, alpha):
             x = abs(part['x'][i] - part['x'][k])
             
             # 平滑核
-            w = W(alpha[2], x, h)
+            w = W(2, x, h)
             
             # 以SPH术语对密度进行累加
             rho[i] += part['m'][k] * w
