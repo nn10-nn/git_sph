@@ -13,8 +13,6 @@ import plotSodTubeResult
 import DW
 from Wf import W
 
-
-
 # 初始数据设定
 n = 80                             # 最小粒子数
 N = 5 * n                          # 总粒子数
@@ -29,22 +27,23 @@ k = 0.0                            # 初始交互计数
 # 从csv文件加载分析解
 data1= pd.read_csv('data1.csv')
 
-
 # 初始化变量
 D = {'u': np.ones(N)}
 
-
-  # 主循环
+# 主循环
 while t < T:
     
     # 时间积分的第一步 (RK2)
     neighbor = neighborhood.neighborhood(part, N)  # 计算邻域
-    dt = timestep.timestep(part, N, D)         # 计算时间步长
+    dt = timestep.timestep(part, N)         # 计算时间步长
     rho = density.density(part, N, neighbor)  # 计算密度
     ipart = part.copy()                      # 复制当前粒子状态
     ipart['d'] = rho                         # 更新临时粒子的密度
-    ipart['p'] = (gamma - 1) * ipart['d'] * part['e']  # 计算压力
-    ipart['c'] = np.sqrt((gamma - 1) * part['e'])      # 计算声速
+    
+    # 修改：更新压力和声速的计算
+    ipart['p'] = (gamma - 1) * ipart['d'] * ipart['e']  # 使用临时粒子的能量
+    ipart['c'] = np.sqrt(gamma * ipart['p'] / ipart['d'])  # 基于最新压力和密度计算声速
+
     D = balance_g.balance_g(part, N, neighbor)   # 计算平衡力
     v, e, x = integration.integration(1, part, ipart, N, D, dt)    # 执行积分步骤1
     ipart['x'] = x                           # 更新临时粒子的位置
@@ -53,12 +52,15 @@ while t < T:
 
     # 时间积分的第二步 (RK2)
     t += dt / 2
-    neighbor = neighborhood.neighborhood(ipart, N,) # 计算邻域
+    neighbor = neighborhood.neighborhood(ipart, N) # 计算邻域
     rho = density.density(ipart, N, neighbor) # 计算密度
     part['d'] = rho                          # 更新粒子的密度
+    
+    # 修改：更新压力和声速的计算
     part['p'] = (gamma - 1) * part['d'] * ipart['e']  # 计算压力
-    part['c'] = np.sqrt((gamma - 1) * ipart['e'])     # 计算声速
-    D = balance_g.balancef_g(ipart, N, neighbor)  # 计算平衡力
+    part['c'] = np.sqrt(gamma * part['p'] / part['d'])  # 使用最新压力和密度计算声速
+
+    D = balance_g.balance_g(ipart, N, neighbor)  # 计算平衡力
     v, e, x = integration.integration(2, part, ipart, N, D, dt)   # 执行积分步骤2
     part['x'] = x                           # 更新粒子的位置
     part['u'] = v                           # 更新粒子的速度
@@ -85,3 +87,4 @@ while t < T:
         k += 1
 
     # 绘图
+    plotSodTubeResult.plotSodTubeResults(part, data1, 0)

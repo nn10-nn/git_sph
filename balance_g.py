@@ -22,9 +22,13 @@ def roe_flux(uL, uR, pL, pR, dL, dR, gamma):
     # 声速平均
     cLR = 0.5 * (cL + cR)
 
+    print(f"cL = {cL}, cR = {cR}, cLR = {cLR}")
+
     # 使用 Roe 格式公式计算中间状态的速度和压力
     u_star = 0.5 * (uL + uR - (pR - pL) / cLR)
     p_star = 0.5 * (pL + pR - cLR * (uR - uL))
+
+    print(f"u_star = {u_star}, p_star = {p_star}")
 
     return u_star, p_star
 
@@ -61,17 +65,26 @@ def balance_g(part, N, neighbor):
             # 使用 Roe 黎曼求解器计算中间状态的速度和压力
             u_star, p_star = roe_flux(uL, uR, pL, pR, dL, dR, gamma)
 
+            print(f"Particle {i}, Neighbor {k}: u_star = {u_star}, p_star = {p_star}")
+
             # 计算平滑核梯度
             if x != 0:  # 避免除以零
                 dw = DW.DW(2, x, h)  # 使用二次核
             else:
                 dw = 0  # 若 x 为零，设置 dw 为零
+            
+            print(f"Particle {i}, Neighbor {k}: x = {x}, h = {h}, dw = {dw}")
+
 
             # 动量平衡：使用中间状态的压力
             D['u'][i] -= part['m'][k] * (p_star / dL**2 + p_star / dR**2) * dw
 
+            print(f"Particle {i}: D['u'][i] = {D['u'][i]}")  # 调试打印动量导数
+
             # 能量平衡：使用中间状态的速度差
             D['e'][i] += 0.5 * part['m'][k] * u_star * dw
+
+            print(f"Particle {i}: D['e'][i] = {D['e'][i]}")  # 调试打印能量导数
 
             # 位置导数
             D['x'][i] = part['u'][i]
