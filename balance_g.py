@@ -81,9 +81,9 @@ def balance_g(part, N, neighbor):
 
             print(f"Particle {i}: D['u'][i] = {D['u'][i]}")  # 调试打印动量导数
 
-            # 能量平衡：使用中间状态的速度差
-            D['e'][i] += 0.5 * part['m'][k] * u_star * dw
-
+            # 改进后的能量平衡计算
+            D['e'][i] += 0.5 * part['m'][k] * (u_star ** 2 + p_star / dL - (uL ** 2 + pL / dL)) * dw
+ 
             print(f"Particle {i}: D['e'][i] = {D['e'][i]}")  # 调试打印能量导数
 
             # 位置导数
