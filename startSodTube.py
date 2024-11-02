@@ -23,6 +23,9 @@ def preProcess(N, dx1, dx2, gamma):
             'c': np.zeros(N),  # 声速
             'm': np.zeros(N),  # 粒子质量
             'h': np.zeros(N)}  # 平滑长度
+    gamma = 1.4
+    part['gamma'] = gamma
+ 
 
     for i in range(N):
         if i < ((N / 5) * 4 + 1):
