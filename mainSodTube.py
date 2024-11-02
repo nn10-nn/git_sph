@@ -90,5 +90,5 @@ while t < T:
     # 在主循环的最后添加打印语句
     print(f"Time: {t:.3f}, Average Pressure: {np.mean(part['p'])}, Average Density: {np.mean(part['d'])}, Average Energy: {np.mean(part['e'])}, Average Velocity: {np.mean(part['u'])}")
 
-    # 绘图
-    plotSodTubeResult.plotSodTubeResults(part, data1, 0)
+# 绘图
+plotSodTubeResult.plotSodTubeResults(part, data1, 0)
