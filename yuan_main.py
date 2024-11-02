@@ -85,5 +85,6 @@ while t < T:
     else:
         t += dt / 2
         k += 1
-
+    
     # 绘图
+plotSodTubeResult.plotSodTubeResults(part, data1, 0)
