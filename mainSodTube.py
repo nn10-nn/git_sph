@@ -78,6 +78,7 @@ while t < T:
     part['u'][-m:] = 0                      # 更新右侧边界的速度
     part['e'][-m:] = 1.795                  # 更新右侧边界的能量
 
+
     # 错误检测
     if np.isnan(part['d']).any() or np.isnan(part['p']).any() or np.isnan(part['u']).any() or np.isnan(part['e']).any() or np.isnan(part['c']).any():
         print(e)
@@ -85,6 +86,9 @@ while t < T:
     else:
         t += dt / 2
         k += 1
+    
+    # 在主循环的最后添加打印语句
+    print(f"Time: {t:.3f}, Average Pressure: {np.mean(part['p'])}, Average Density: {np.mean(part['d'])}, Average Energy: {np.mean(part['e'])}, Average Velocity: {np.mean(part['u'])}")
 
     # 绘图
     plotSodTubeResult.plotSodTubeResults(part, data1, 0)
