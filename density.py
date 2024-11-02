@@ -1,7 +1,7 @@
 import numpy as np
 from Wf import W
 
-def density(part, N, neighbor, alpha):
+def density(part, N, neighbor):
     """
     计算基于局部粒子数量的粒子密度。
 
