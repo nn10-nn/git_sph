@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plotSodTubeResults(part, data, makeVideo, k=None):
+def plotSodTubeResults(part, output, makeVideo, k=None):
     """
     绘制数值分析结果，应用于Sod管的SPH方法。
 
@@ -27,7 +27,7 @@ def plotSodTubeResults(part, data, makeVideo, k=None):
     # 密度图
     plt.subplot(2, 2, 1)
     plt.plot(part['x'], part['d'], 'ok', label='SPH Data', markersize=1.2)
-    plt.plot(data['x'], data['rho'], 'k-', label='Reference Data', linewidth=0.75)
+    plt.plot(output['x'], output['rho'], 'k-', label='Reference Data', linewidth=0.75)
     plt.xlabel('Position (m)')
     plt.ylabel('Density (kg/m^3)')
     plt.xlim((-0.6, 0.6))
@@ -38,7 +38,7 @@ def plotSodTubeResults(part, data, makeVideo, k=None):
     # 压力图
     plt.subplot(2, 2, 2)
     plt.plot(part['x'], part['p'], 'ok', markersize=1.2)
-    plt.plot(data['x'], data['P'], 'k-', linewidth=0.75)
+    plt.plot(output['x'], output['P'], 'k-', linewidth=0.75)
     plt.xlabel('Position (m)')
     plt.ylabel('Pressure (kPa)')
     plt.axis([-0.6, 0.6, 0.1, 1.1])
@@ -46,7 +46,7 @@ def plotSodTubeResults(part, data, makeVideo, k=None):
     # 速度图
     plt.subplot(2, 2, 3)
     plt.plot(part['x'], part['u'], 'ok', markersize=1.2)
-    plt.plot(data['x'], data['u'], 'k-', linewidth=0.75)
+    plt.plot(output['x'], output['u'], 'k-', linewidth=0.75)
     plt.xlabel('Position (m)')
     plt.ylabel('Velocity (m/s)')
     plt.axis([-0.6, 0.6, -0.05, 0.9])
@@ -54,7 +54,7 @@ def plotSodTubeResults(part, data, makeVideo, k=None):
     # 内能图
     plt.subplot(2, 2, 4)
     plt.plot(part['x'], part['e'], 'ok', markersize=1.2)
-    plt.plot(data['x'], data['e'], 'k-', linewidth=0.75)
+    plt.plot(output['x'], output['e'], 'k-', linewidth=0.75)
     plt.xlabel('Position (m)')
     plt.ylabel('Internal Energy (kJ/kg)')
     plt.axis([-0.6, 0.6, 1.7, 2.7])

@@ -34,6 +34,6 @@ def density(part, N, neighbor):
             rho[i] += part['m'][k] * w
 
     # 密度校正
-    rho += 0.0855
+    #rho += 0.0855
     
     return rho

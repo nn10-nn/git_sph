@@ -1,5 +1,9 @@
 import numpy as np
+import timestep
+import Wf
 import DW  
+import density
+
 
 gamma = 1.4  # 气体常数
 
@@ -28,7 +32,6 @@ def roe_flux(uL, uR, pL, pR, dL, dR, gamma):
     u_star = 0.5 * (uL + uR - (pR - pL) / cLR)
     p_star = 0.5 * (pL + pR - cLR * (uR - uL))
 
-    #print(f"u_star = {u_star}, p_star = {p_star}")
 
     return u_star, p_star
 
@@ -45,7 +48,9 @@ def balance_g(part, N, neighbor):
     dict: 包含粒子属性导数的字典。
     """
     D = {'u': np.zeros(N), 'e': np.zeros(N), 'x': np.zeros(N)}
-
+    dt = timestep.timestep(part, N)
+    rho = density.density(part, N, neighbor)  # 计算密度
+    ipart = part.copy()     #更新ipart
     for i in range(N):
         for j in range(neighbor[i][0]):
             k = neighbor[i][j + 1]  # 邻居索引
@@ -65,28 +70,38 @@ def balance_g(part, N, neighbor):
             # 使用 Roe 黎曼求解器计算中间状态的速度和压力
             u_star, p_star = roe_flux(uL, uR, pL, pR, dL, dR, gamma)
 
-           #print(f"Particle {i}, Neighbor {k}: u_star = {u_star}, p_star = {p_star}")
-
             # 计算平滑核梯度
             if x != 0:  # 避免除以零
                 dw = DW.DW(2, x, h)  # 使用二次核
             else:
                 dw = 0  # 若 x 为零，设置 dw 为零
-            
-            #print(f"Particle {i}, Neighbor {k}: x = {x}, h = {h}, dw = {dw}")
 
 
-            # 动量平衡：使用中间状态的压力
-            D['u'][i] -= part['m'][k] * (p_star / dL**2 + p_star / dR**2) * dw
+             # 计算高斯核函数值
+            W_ab = Wf.W(2,x, h)  # 使用缩放后的核函数
+            Vab_squared = (1 / dL / dL ) * W_ab + (1 / dR / dR) * W_ab  # 离散积分近似
+            # 公式 11a：加速度
+            x_a_dot2 = - part['m'][i]* p_star * Vab_squared * dw
+             # 公式 11b：能量变化率
+            D['e'][i] = - part['m'][i] * p_star * (u_star - part['u'][i]- 0.5 * dt * x_a_dot2) * Vab_squared * dw
+            # 46a: 更新位置
+            ipart['x'] += (part['u'] + 0.5 *dt * x_a_dot2 ) * dt
+            # 46b: 更新速度
+            ipart['u'] += x_a_dot2 * dt
+            # 46c: 更新能量
+            ipart['e'] += D['e'] * dt
 
-            #print(f"Particle {i}: D['u'][i] = {D['u'][i]}")  # 调试打印动量导数
+            # 47a: 计算rho*，改变光滑长度
+            rho_star = np.zeros_like(part['d'])
+            C_smooth = 2
+            y = 1
+            h_scaled = C_smooth * part['h'][i]
+            W_ab = Wf.W(2,xij, h_scaled)  # 计算核函数值
+            rho_star[i] += part['m'][j] * W_ab
+            # 47b: 更新平滑长度
+            h_new = y * (part['m'] / rho_star) 
+            # 47c: 更新密度
+            W_ab = Wf.W(2, xij,h_new)
+            ipart['d'] += part['m'][j] * W_ab
 
-            # 改进后的能量平衡计算
-            D['e'][i] += 0.5 * part['m'][k] * (u_star ** 2 + p_star / dL - (uL ** 2 + pL / dL)) * dw
- 
-            #print(f"Particle {i}: D['e'][i] = {D['e'][i]}")  # 调试打印能量导数
-
-            # 位置导数
-            D['x'][i] = part['u'][i]
-
-    return D
+    return ipart, dt   #让ipart更新，part不变

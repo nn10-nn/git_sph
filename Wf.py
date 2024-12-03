@@ -16,6 +16,7 @@ def W(opt, r, h):
     返回:
     float: 平滑核函数的梯度结果
     """
+
     
     if opt == 1:
         # 三次样条平滑核 (Cubic Spline Kernel)

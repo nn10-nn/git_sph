@@ -31,29 +31,29 @@ def preProcess(N, dx1, dx2, gamma):
         if i < ((N / 5) * 4 + 1):
             # 左侧粒子的位置计算
             # 非均匀分布的粒子属性
-            part['x'][i] = -(0.6 - dx1/2) + dx1 * i
+            part['x'][i] = -(0.5 - dx1/2.0) + dx1 * i
             # 均匀分布的粒子属性
-            part['x'][i] = -0.6 + dx1 * i
+            part['x'][i] = -0.5 + dx1 * i
             part['d'][i] = 1.0
-            part['e'][i] = 2.5
-            part['p'][i] = (gamma - 1) * part['d'][i] * part['e'][i]  # 计算压力
+            part['e'][i] = gamma 
+            part['p'][i] = 1  # 计算压力
             part['u'][i] = 0.0  # 初始速度设置为0
-            part['c'][i] = np.sqrt(gamma  * part['e'][i])  # 计算声速
-            part['m'][i] = dx1  # 假设所有粒子的质量相同，也可以根据实际情况调整
-            part['h'][i] = 8 * dx1  # 平滑长度
+            part['c'][i] = np.sqrt((gamma  * (gamma-1) )* part['e'][i])  # 计算声速
+            part['m'][i] = dx1  # 用密度part['d'][i]质量密度估计公式算出mb
+            part['h'][i] = 8.0 * dx1  # ，利用m即dx1和rho:1.0去求先求W，再用W求h平滑长度
 
         else:
             # 右侧粒子的位置计算
             # 非均匀分布的粒子属性
-            part['x'][i] = dx2*(i-((N/5)*4 + 1) + 0.5);
+            part['x'][i] = dx2*(i-((N/5.0)*4 + 1) + 0.5);
             # 均匀分布的粒子属性
-            part['x'][i] = 0.0 + dx2*(i - (N/5)*4);
-            part['d'][i] = 0.25
-            part['e'][i] = 1.795
-            part['p'][i] = (gamma - 1) * part['d'][i] * part['e'][i]  # 计算压力
+            part['x'][i] = 0.0 + dx2*(i - (N/5.0)*4.0);
+            part['d'][i] = 0.125
+            part['e'][i] = gamma * 0.1 / 0.125 
+            part['p'][i] = 0.1  # 计算压力
             part['u'][i] = 0.0  # 初始速度设置为0
-            part['c'][i] = np.sqrt(gamma  * part['e'][i])  # 计算声速
-            part['m'][i] = dx1  # 假设所有粒子的质量相同
-            part['h'][i] = 2 * dx2  # 平滑长度
+            part['c'][i] = np.sqrt((gamma  * (gamma-1) )* part['e'][i])  # 计算声速
+            part['m'][i] = dx1  # 用密度part['d'][i]质量密度估计公式算出mb
+            part['h'][i] = 2.0 * dx2  # 平滑长度
 
     return part
