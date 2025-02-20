@@ -32,7 +32,7 @@ def timestep(part, N):
     dtc_min = min(dtc_list)
 
     
-    # 计算最终的时间步长
+    # 计算最终的时间步长  0.25是CFL数
     dt = 0.25 * dtc_min
     
     return dt

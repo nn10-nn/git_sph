@@ -54,6 +54,6 @@ def preProcess(N, dx1, dx2, gamma):
             part['u'][i] = 0.0  # 初始速度设置为0
             part['c'][i] = np.sqrt((gamma  * (gamma-1) )* part['e'][i])  # 计算声速
             part['m'][i] = dx1  # 用密度part['d'][i]质量密度估计公式算出mb
-            part['h'][i] = 2.0 * dx2  # 平滑长度
+            part['h'][i] = 2.0 * dx2  # 平滑长度  重新算2.0
 
     return part

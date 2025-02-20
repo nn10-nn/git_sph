@@ -36,7 +36,10 @@ def W(opt, r, h):
         # 高斯平滑核 (Gaussian Kernel)
         sigma = 1 / (h * np.sqrt(np.pi))
         s = r / h
-        if s <= 3:
+        #print(r)  
+        #print(type(r))
+
+        if s <= 3.0:
             # 核函数在距离s小于等于3时的计算公式
             f = np.exp(-s**2)
         else:
