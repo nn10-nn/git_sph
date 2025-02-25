@@ -17,16 +17,16 @@ dx2 = 0.5 / 80                   # 右侧空间步长
 def density_difference(alpha, n, dx, m, rho_target):
     h = alpha * dx  # 光滑长度
     # r = n * dx   粒子间距离
-    terms = np.array([np.exp(-(k / alpha)**2) for k in range(1, n + 1)])
-    rho_i = m / (h * np.sqrt(np.pi)) * np.sum(terms)
+    terms = np.array([(1/(h * np.sqrt(np.pi)))*np.exp(-(k / alpha)**2) for k in range(1, n + 1)])
+    rho_i = m * np.sum(terms)
     return rho_i - rho_target  # 返回密度差
 
 # 求解α和h
-for n in range(1, 21):  # 测试n = 1, 2, ..., 20
+for n in range(1, 16):  # 测试n = 1, 2, ..., 15
     alpha_initial_guess = n + 0.5  # α的初始猜测值
     # 使用fsolve求解α
     try:
-        alpha_solution = fsolve(density_difference, alpha_initial_guess, args=(n, dx1, m, rho_left))[0]
+        alpha_solution = fsolve(density_difference, alpha_initial_guess, args=(n, dx1, m, rho_left), xtol=1e-6)[0]
         h_solution = alpha_solution * dx1  # 计算h
         # 输出结果
         print(f"n = {n}:")
@@ -37,4 +37,3 @@ for n in range(1, 21):  # 测试n = 1, 2, ..., 20
         # 如果fsolve无法收敛，则打印一条错误消息并继续下一个n值
         print(f"n = {n}: fsolve无法收敛到解。")
         print()
-
